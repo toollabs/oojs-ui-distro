@@ -1,7 +1,8 @@
 .*
 replica.my.cnf
 node
-
+tmp
+node_modules
 
 # Compiled Object files
 *.slo
@@ -24,3 +25,4 @@ node
 *.exe
 *.out
 *.app
+*.log
