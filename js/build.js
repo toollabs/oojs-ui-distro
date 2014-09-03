@@ -18,8 +18,10 @@
 		// Attempt to load JSON data
 		var buildList = [];
 		try {
-			buildList = require( 'buildlist.json' );
-		} catch ( ex ) {}
+			buildList = require( '../public_html/buildlist.json' );
+		} catch ( ex ) {
+			console.log( ex );
+		}
 		buildList.push( {
 			rev: repoOldRev,
 			date: now
