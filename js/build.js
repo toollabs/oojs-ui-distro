@@ -1,34 +1,11 @@
 // TODO: Write available revisions into JSON file
 
 (function() {
-
-	var git        = new( require( 'git-wrapper' ) )();
-	var $          = require( './lib/jQuery.js' );
-	var fs         = require( 'fs' );
-	var exec       = require( 'child_process' ).exec;
-	var dateFormat = require( 'dateformat' );
-	var now	       = new Date();
-
-
-	deleteFilesRecursive = function( path ) {
-		var filesList = [];
-		if ( fs.existsSync( path ) ) {
-			filesList = fs.readdirSync( path );
-			filesList.forEach( function( item, idx ) {
-				var currentPath = path + '/' + item;
-				if ( fs.lstatSync( currentPath )
-					.isDirectory() ) {
-					// recursive call on detected directory
-					deleteFilesRecursive( currentPath );
-				} else {
-					// Bye, file
-					fs.unlinkSync( currentPath );
-				}
-			} );
-			fs.rmdirSync( path );
-		}
-	};
-
+	var git         = new( require( 'git-wrapper' ) )();
+	var $           = require( './lib/jQuery.js' );
+	var fs          = require( 'fs' );
+	var exec        = require( 'child_process' ).exec;
+	var now         = new Date();
 
 	// Change to oojs-ui dir
 	process.chdir( './public_html/oojs-ui' );
@@ -56,6 +33,9 @@
 	};
 
 	moveAndBuild = function() {
+		var filesNFolders2Archive = [
+			'lib', 'demos', 'LICENSE-MIT', 'README.md', 'AUTHORS.txt'
+		];
 		try {
 			fs.mkdirSync( '../dist_old', '2775' );
 			fs.mkdirSync( '../arch_old', '2775' );
@@ -68,22 +48,31 @@
 
 		console.log( 'Backing up dependencies...' );
 		git.exec( 'checkout', [ repoOldRev ], function( err, msg ) {
-			fs.renameSync( 'lib', '../dist_old/' + repoOldRev + '/lib' );
-			fs.renameSync( 'demos', '../dist_old/' + repoOldRev + '/demos' );
-			fs.renameSync( 'LICENSE-MIT', '../dist_old/' + repoOldRev + '/LICENSE-MIT' );
-			fs.renameSync( 'README.md', '../dist_old/' + repoOldRev + '/README.md' );
-			fs.renameSync( 'AUTHORS.txt', '../dist_old/' + repoOldRev + '/AUTHORS.txt' );
+			filesNFolders2Archive.forEach( function( item, index ) {
+				fs.renameSync( item, '../dist_old/' + repoOldRev + '/' + item );
+			} );
 
 			console.log( 'Creating archive...' );
-			exec( '7z a -r "../arch_old/oojs-ui-' + repoOldRev + '.7z" "../dist_old/' + repoOldRev + '/"', function() {
+
+			exec( '7z a "../arch_old/oojs-ui-' + repoOldRev + '.7z" "../dist_old/' + repoOldRev + '/"', function() {
 				git.exec( 'reset', [ '--hard', 'origin/master' ], function( err, msg ) {
 					git.exec( 'checkout', {
 						f: true
 					}, [ 'master' ], function( err, msg ) {
 						console.log( 'Building...' );
 						exec( 'npm install', function( err, msg ) {
-							console.log( 'Listing backup...' );
-							addBuild2List();
+							console.log( 'Creating archive of current version' );
+							try {
+								fs.unlinkSync( '../oojsui.7z' );
+							} catch ( ex ) {}
+
+							var filesNames = '"' + filesNFolders2Archive.join( '" "' ) + '" "dist"';
+							var cmd = '7z a "../oojsui.7z" ' + filesNames;
+							console.log( cmd );
+							exec( cmd, function() {
+								console.log( 'Listing backup...' );
+								addBuild2List();
+							} );
 						} );
 					} );
 				} );
