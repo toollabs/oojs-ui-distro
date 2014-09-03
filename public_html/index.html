@@ -11,16 +11,21 @@
 	padding:1em;
 }
 table {
-    border-collapse: collapse;
+	border-collapse: collapse;
 }
 table, th, td {
-    border: 1px solid black;
+	border: 1px solid black;
 	margin-bottom: 1em;
 }
 td, th {
-    padding: 15px;
+	padding: 15px;
 }
-
+thead {
+	background-color: #cdd;
+}
+tbody tr:nth-child(even) {
+	background-color: #dfdfdf;
+}
 </style>
 
 </head>
@@ -35,24 +40,51 @@ OOjs UI (Object-Oriented JavaScript – User Interface) is a modern JavaScript U
 
 <div>
 <table>
+<thead>
 <tr>
 <th>Git version</th>
 <th>Archived on</th>
 <th>Test page</th>
 <th>Download archive</th>
 </tr>
+</thead>
+<tbody>
 <tr>
 <td>master</td>
 <td>not archived, built &lt;&nbsp;24&nbsp;h ago</td>
 <td><a href="oojs-ui/demos/index.html">Current version</a></td>
 <td><a href="oojsui.7z">Current version</a></td>
 </tr>
+</tbody>
 </table>
 </div>
 
 
 <script>
+$.getJSON('buildlist.json').done(function(json) {
+	var $table = $('table');
+	$.each(json, function(idx, item) {
+		var $tr = $('<tr>'),
+			$vers = $('<td>').text(item.rev).appendTo($tr),
+			$date = $('<td>').text(item.date).appendTo($tr),
+			$testPage = $('<td>').appendTo($tr),
+			$testPageLink = $('<a>')
+				.text('Archived test page')
+				.attr({
+					href: 'dist_old/' + item.rev + '/demos/index.html'
+				})
+				.appendTo($testPage),
+			$download = $('<td>').appendTo($tr),
+			$downloadLink = $('<a>')
+				.text('Archived download')
+				.attr({
+					href: 'arch_old/oojs-ui-' + item.rev + '.7z'
+				})
+				.appendTo($download);
 
+		$tr.appendTo($table);
+	});
+});
 </script>
 
 
