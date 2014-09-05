@@ -50,7 +50,7 @@ OOjs UI (Object-Oriented JavaScript – User Interface) is a modern JavaScript U
 </thead>
 <tbody>
 <tr>
-<td>master</td>
+<td><a href="https://github.com/wikimedia/oojs-ui/tree/master">master</a></td>
 <td>not archived, built &lt;&nbsp;24&nbsp;h ago</td>
 <td><a href="oojs-ui/demos/index.html">Current version</a></td>
 <td><a href="oojsui.7z">Current version</a></td>
@@ -65,8 +65,16 @@ $.getJSON('buildlist.json').done(function(json) {
 	var $table = $('table');
 	$.each(json, function(idx, item) {
 		var $tr = $('<tr>'),
-			$vers = $('<td>').text(item.rev).appendTo($tr),
-			$date = $('<td>').text(item.date).appendTo($tr),
+			$vers = $('<td>').appendTo($tr),
+			$versLink = $('<a>')
+				.text(item.rev)
+				.attr({
+					href: 'https://github.com/wikimedia/oojs-ui/tree/' + item.rev
+				})
+				.appendTo($vers),
+			$date = $('<td>')
+				.text(item.date)
+				.appendTo($tr),
 			$testPage = $('<td>').appendTo($tr),
 			$testPageLink = $('<a>')
 				.text('Archived test page')
