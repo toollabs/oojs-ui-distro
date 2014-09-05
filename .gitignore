@@ -7,6 +7,7 @@ oojsui.7z
 public_html/arch_old/
 public_html/dist_old/
 public_html/buildlist.json
+.err
 
 # Compiled Object files
 *.slo
