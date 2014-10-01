@@ -35,9 +35,11 @@
 	};
 
 	moveAndBuild = function() {
+		var sevenZip = '7zr';
 		var filesNFolders2Archive = [
 			'lib', 'demos', 'LICENSE-MIT', 'README.md', 'AUTHORS.txt'
 		];
+
 		try {
 			fs.mkdirSync( '../dist_old', '2775' );
 			fs.mkdirSync( '../arch_old', '2775' );
@@ -56,7 +58,9 @@
 
 			console.log( 'Creating archive...' );
 
-			exec( '7z a "../arch_old/oojs-ui-' + repoOldRev + '.7z" "../dist_old/' + repoOldRev + '/"', function() {
+			exec( sevenZip + ' a "../arch_old/oojs-ui-' + repoOldRev + '.7z" "../dist_old/' + repoOldRev + '/"', function( err, msg ) {
+				// console.log( err );
+				// console.log( msg );
 				git.exec( 'reset', [ '--hard', 'origin/master' ], function( err, msg ) {
 					git.exec( 'checkout', {
 						f: true
@@ -69,7 +73,7 @@
 							} catch ( ex ) {}
 
 							var filesNames = '"' + filesNFolders2Archive.join( '" "' ) + '" "dist"';
-							var cmd = '7z a "../oojsui.7z" ' + filesNames;
+							var cmd = sevenZip + ' a "../oojsui.7z" ' + filesNames;
 							console.log( cmd );
 							exec( cmd, function() {
 								console.log( 'Listing backup...' );
