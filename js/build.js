@@ -1,5 +1,3 @@
-// TODO: Write available revisions into JSON file
-
 (function() {
 	var git         = new( require( 'git-wrapper' ) )();
 	var $           = require( './lib/jQuery.js' );
@@ -67,17 +65,20 @@
 					}, [ 'master' ], function( err, msg ) {
 						console.log( 'Building...' );
 						exec( 'npm install', function( err, msg ) {
-							console.log( 'Creating archive of current version' );
-							try {
-								fs.unlinkSync( '../oojsui.7z' );
-							} catch ( ex ) {}
+							console.log( 'Running composer...' );
+							exec( '~/composer/composer.phar install', function() {
+								console.log( 'Creating archive of current version' );
+								try {
+									fs.unlinkSync( '../oojsui.7z' );
+								} catch ( ex ) {}
 
-							var filesNames = '"' + filesNFolders2Archive.join( '" "' ) + '" "dist"';
-							var cmd = sevenZip + ' a "../oojsui.7z" ' + filesNames;
-							console.log( cmd );
-							exec( cmd, function() {
-								console.log( 'Listing backup...' );
-								addBuild2List();
+								var filesNames = '"' + filesNFolders2Archive.join( '" "' ) + '" "dist"';
+								var cmd = sevenZip + ' a "../oojsui.7z" ' + filesNames;
+								console.log( cmd );
+								exec( cmd, function() {
+									console.log( 'Listing backup...' );
+									addBuild2List();
+								} );
 							} );
 						} );
 					} );

@@ -2,6 +2,7 @@
 replica.my.cnf
 node
 tmp
+composer
 node_modules
 oojsui.7z
 public_html/arch_old/

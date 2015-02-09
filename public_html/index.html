@@ -63,6 +63,9 @@ OOjs UI (Object-Oriented JavaScript – User Interface) is a modern JavaScript U
 <script>
 $.getJSON('buildlist.json').done(function(json) {
 	var $table = $('table');
+
+	json.reverse();
+
 	$.each(json, function(idx, item) {
 		var $tr = $('<tr>'),
 			$vers = $('<td>').appendTo($tr),
