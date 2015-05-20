@@ -1,7 +1,7 @@
 (function() {
 	var git         = new( require( 'git-wrapper' ) )();
 	var $           = require( './lib/jQuery.js' );
-	var fs          = require( 'fs' );
+	var fs          = require( 'fs-extra' );
 	var exec        = require( 'child_process' ).exec;
 	var now         = new Date();
 
@@ -35,7 +35,7 @@
 	moveAndBuild = function() {
 		var sevenZip = '7zr';
 		var filesNFolders2Archive = [
-			'lib', 'demos', 'LICENSE-MIT', 'README.md', 'AUTHORS.txt'
+			'demos', 'LICENSE-MIT', 'README.md', 'AUTHORS.txt'
 		];
 
 		try {
@@ -53,6 +53,8 @@
 			filesNFolders2Archive.forEach( function( item, index ) {
 				fs.renameSync( item, '../dist_old/' + repoOldRev + '/' + item );
 			} );
+			fs.copySync( 'node_modules/jquery/dist', '../dist_old/' + repoOldRev + '/node_modules/jquery/dist' );
+			fs.copySync( 'node_modules/oojs/dist', '../dist_old/' + repoOldRev + '/node_modules/oojs/dist' );
 
 			console.log( 'Creating archive...' );
 
@@ -72,6 +74,8 @@
 									fs.unlinkSync( '../oojsui.7z' );
 								} catch ( ex ) {}
 
+								filesNFolders2Archive.push('node_modules/jquery/dist');
+								filesNFolders2Archive.push('node_modules/oojs/dist');
 								var filesNames = '"' + filesNFolders2Archive.join( '" "' ) + '" "dist"';
 								var cmd = sevenZip + ' a "../oojsui.7z" ' + filesNames;
 								console.log( cmd );
