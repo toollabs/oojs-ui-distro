@@ -32,3 +32,5 @@ public_html/buildlist.json
 *.out
 *.app
 *.log
+
+service.manifest
