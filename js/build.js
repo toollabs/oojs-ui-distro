@@ -33,7 +33,7 @@
 	};
 
 	moveAndBuild = function() {
-		var sevenZip = '7zr';
+		var sevenZip = '7z';
 		var filesNFolders2Archive = [
 			'demos', 'LICENSE-MIT', 'README.md', 'AUTHORS.txt'
 		];
