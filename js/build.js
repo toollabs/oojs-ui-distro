@@ -35,7 +35,7 @@
 	moveAndBuild = function() {
 		var sevenZip = '7z';
 		var filesNFolders2Archive = [
-			'demos', 'LICENSE-MIT', 'README.md', 'AUTHORS.txt'
+			'demos', 'vendor', 'php', 'i18n', 'LICENSE-MIT', 'README.md', 'AUTHORS.txt'
 		];
 
 		try {
@@ -67,21 +67,27 @@
 					}, [ 'master' ], function( err, msg ) {
 						console.log( 'Building...' );
 						exec( 'npm install', function( err, msg ) {
-							console.log( 'Running composer...' );
-							exec( '~/composer/composer.phar install', function() {
-								console.log( 'Creating archive of current version' );
-								try {
-									fs.unlinkSync( '../oojsui.7z' );
-								} catch ( ex ) {}
+							console.log( 'composer: Updating composer...' );
+							exec( '~/composer/composer.phar self-update', function() {
+								console.log( 'composer: Pulling-in vendor libs...' );
+								exec( '~/composer/composer.phar install', function() {
+									console.log( 'composer: Updating vendors...' );
+									exec( '~/composer/composer.phar update', function() {
+										console.log( 'Creating archive of current version' );
+										try {
+											fs.unlinkSync( '../oojsui.7z' );
+										} catch ( ex ) {}
 
-								filesNFolders2Archive.push('node_modules/jquery/dist');
-								filesNFolders2Archive.push('node_modules/oojs/dist');
-								var filesNames = '"' + filesNFolders2Archive.join( '" "' ) + '" "dist"';
-								var cmd = sevenZip + ' a "../oojsui.7z" ' + filesNames;
-								console.log( cmd );
-								exec( cmd, function() {
-									console.log( 'Listing backup...' );
-									addBuild2List();
+										filesNFolders2Archive.push('node_modules/jquery/dist');
+										filesNFolders2Archive.push('node_modules/oojs/dist');
+										var filesNames = '"' + filesNFolders2Archive.join( '" "' ) + '" "dist"';
+										var cmd = sevenZip + ' a "../oojsui.7z" ' + filesNames;
+										console.log( cmd );
+										exec( cmd, function() {
+											console.log( 'Listing backup...' );
+											addBuild2List();
+										} );
+									} );
 								} );
 							} );
 						} );
