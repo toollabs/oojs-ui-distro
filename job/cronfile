@@ -1,3 +1,3 @@
 PATH=/usr/local/bin:/usr/bin:/bin:$HOME/node/bin:$PATH
 MAILTO=rillke@wikipedia.de
-27 4 * * * jsub -once -mem 5G -N oojs_ui_buildservice node/bin/node js/build.js
+27 4 * * * jsub -once -l release=trusty -mem 5G -N oojs_ui_buildservice node/bin/node js/build.js
