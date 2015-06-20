@@ -59,20 +59,23 @@
 			console.log( 'Creating archive...' );
 
 			exec( sevenZip + ' a "../arch_old/oojs-ui-' + repoOldRev + '.7z" "../dist_old/' + repoOldRev + '/"', function( err, msg ) {
-				// console.log( err );
-				// console.log( msg );
+				if ( err ) process.stderr.write( err );
 				git.exec( 'reset', [ '--hard', 'origin/master' ], function( err, msg ) {
 					git.exec( 'checkout', {
 						f: true
 					}, [ 'master' ], function( err, msg ) {
 						console.log( 'Building...' );
 						exec( 'npm install', function( err, msg ) {
+							if ( err ) process.stderr.write( err );
 							console.log( 'composer: Updating composer...' );
-							exec( '~/composer/composer.phar self-update', function() {
+							exec( '~/composer/composer.phar self-update', function( err ) {
+								if ( err ) process.stderr.write( err );
 								console.log( 'composer: Pulling-in vendor libs...' );
-								exec( '~/composer/composer.phar install', function() {
+								exec( '~/composer/composer.phar install', function( err ) {
+									if ( err ) process.stderr.write( err );
 									console.log( 'composer: Updating vendors...' );
-									exec( '~/composer/composer.phar update', function() {
+									exec( '~/composer/composer.phar update', function( err ) {
+										if ( err ) process.stderr.write( err );
 										console.log( 'Creating archive of current version' );
 										try {
 											fs.unlinkSync( '../oojsui.7z' );
@@ -83,7 +86,8 @@
 										var filesNames = '"' + filesNFolders2Archive.join( '" "' ) + '" "dist"';
 										var cmd = sevenZip + ' a "../oojsui.7z" ' + filesNames;
 										console.log( cmd );
-										exec( cmd, function() {
+										exec( cmd, {maxBuffer: 1024 * 1024}, function( err, out, code ) {
+											if ( err ) process.stderr.write( err );
 											console.log( 'Listing backup...' );
 											addBuild2List();
 										} );
