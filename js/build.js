@@ -58,7 +58,7 @@
 
 			console.log( 'Creating archive...' );
 
-			exec( sevenZip + ' a "../arch_old/oojs-ui-' + repoOldRev + '.7z" "../dist_old/' + repoOldRev + '/"', function( err, msg ) {
+			exec( sevenZip + ' a "../arch_old/oojs-ui-' + repoOldRev + '.7z" "../dist_old/' + repoOldRev + '/"', {maxBuffer: 1024 * 1024}, function( err, msg ) {
 				if ( err ) process.stderr.write( err );
 				git.exec( 'reset', [ '--hard', 'origin/master' ], function( err, msg ) {
 					git.exec( 'checkout', {
